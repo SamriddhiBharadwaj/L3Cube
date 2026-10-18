@@ -1,0 +1,22 @@
+# Virtual environments
+.venv/
+.venv312/
+
+# macOS
+.DS_Store
+
+# Python cache / tooling
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Generated project output
+pipeline_output.txt
+*.log

@@ -1,0 +1,8 @@
+# Install the macOS PyTorch wheel with MPS support; CUDA is not required.
+torch>=2.2
+transformers>=4.51,<5
+IndicTransToolkit>=1.1.0
+sentencepiece>=0.1.99
+sacremoses>=0.1.1
+yake>=0.4.8
+langdetect>=1.0.9
