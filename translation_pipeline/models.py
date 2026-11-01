@@ -23,6 +23,11 @@ class Sentence:
     paragraph_id: str
     section_id: str
     sentence_index: int
+    char_start: int = 0
+    char_end: int = 0
+    enumerator: Optional[str] = None
+    chunk_id: Optional[str] = None
+    warnings: List[str] = field(default_factory=list)
 
 
 @dataclass
@@ -35,6 +40,18 @@ class Paragraph:
     paragraph_index: int
     is_heading: bool = False
     sentences: List[Sentence] = field(default_factory=list)
+    char_start: int = 0
+    char_end: int = 0
+    enumerator: Optional[str] = None
+
+
+@dataclass
+class PageHeader:
+    """Page-label metadata removed from PDF-derived source text."""
+
+    page_number: int
+    total_pages: int
+    header_text: str
 
 
 @dataclass
@@ -83,6 +100,10 @@ class Entity:
     targetName: Optional[str]
     termType: str
     gender: Optional[str] = None
+    mentionCount: int = 1
+    firstSentenceId: Optional[str] = None
+    source: str = "unknown"
+    confidence: Optional[float] = None
 
 
 @dataclass
@@ -96,6 +117,7 @@ class PreprocessedDocument:
     entities: List[Entity]
     char_count: int
     line_count: int
+    page_headers: List[PageHeader] = field(default_factory=list)
 
 
 @dataclass
@@ -112,3 +134,8 @@ class TranslationChunk:
     followingContext: Optional[str]
     status: str = "pending"
     repairCount: int = 0
+    contentTokenCount: int = 0
+    contextTokenCount: int = 0
+    unknownTokenRate: float = 0.0
+    warnings: List[str] = field(default_factory=list)
+    sentences: List[Sentence] = field(default_factory=list)

@@ -5,7 +5,7 @@ import logging
 from typing import List, Optional
 
 from .chunking import TextTokenizer, chunk_document
-from .models import Entity, TranslationChunk
+from .models import Entity, PreprocessedDocument, TranslationChunk
 from .preprocessing import (
     EntityCandidateExtractor,
     LanguageExtractor,
@@ -18,9 +18,15 @@ logger = logging.getLogger(__name__)
 class TranslationChunkQueue(asyncio.Queue):
     """An asyncio queue carrying ordered chunks and their document entity registry."""
 
-    def __init__(self, chunks: List[TranslationChunk], entities: List[Entity]) -> None:
+    def __init__(
+        self,
+        chunks: List[TranslationChunk],
+        entities: List[Entity],
+        preprocessed: Optional[PreprocessedDocument] = None,
+    ) -> None:
         super().__init__()
         self.entities = list(entities)
+        self.preprocessed = preprocessed
         for chunk in sorted(chunks, key=lambda item: item.unitIndex):
             self.put_nowait(chunk)
 
@@ -55,7 +61,7 @@ async def run_preprocessing_pipeline(
         terminology_extractor,
     )
     chunks = await asyncio.to_thread(chunk_document, preprocessed, max_tokens, tokenizer)
-    queue = TranslationChunkQueue(chunks, preprocessed.entities)
+    queue = TranslationChunkQueue(chunks, preprocessed.entities, preprocessed=preprocessed)
     logger.info(
         "Pipeline handoff ready: %d chunks and %d entities for document %s",
         queue.qsize(),
